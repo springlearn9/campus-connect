@@ -1,0 +1,27 @@
+# Git Setup Commands for Campus Connect Project
+# Run these commands in PowerShell after installing Git
+
+# 1. Navigate to project directory
+cd "d:\dev\java\campus-connect"
+
+# 2. Initialize Git repository
+git init
+
+# 3. Add all files to staging
+git add .
+
+# 4. Create initial commit
+git commit -m "Initial commit: Campus Connect Spring Boot project"
+
+# 5. Add remote repository
+git remote add origin https://github.com/springlearn9/campus-connect.git
+
+# 6. Set the default branch name (if needed)
+git branch -M main
+
+# 7. Push to GitHub
+git push -u origin main
+
+# Optional: Set up your Git user info (if not already done)
+# git config --global user.name "Your Name"
+# git config --global user.email "your.email@example.com"
