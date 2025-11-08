@@ -1,6 +1,7 @@
 
-    package com.campusconnect.model;
+package com.campusconnect.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -26,7 +27,8 @@ import java.time.LocalDateTime;
         @CreatedDate
         private LocalDateTime foundDate;
 
-        @ManyToOne
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
         private User reportedBy;
     }
 

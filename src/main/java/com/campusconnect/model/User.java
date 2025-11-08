@@ -1,15 +1,17 @@
 
-    package com.campusconnect.model;
+package com.campusconnect.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
-    @Entity
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Table(name = "users")
-    public class User {
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "users")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class User {
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
