@@ -107,13 +107,6 @@ public class EventController {
         return ResponseEntity.ok(events);
     }
 
-    // Get events by status
-    @GetMapping("/status/{status}")
-    public ResponseEntity<List<Event>> getEventsByStatus(@PathVariable String status) {
-        List<Event> events = eventService.getEventsByStatus(status);
-        return ResponseEntity.ok(events);
-    }
-
     // Search events by title
     @GetMapping("/search")
     @Operation(summary = "Search events", description = "Search events by title keyword")
