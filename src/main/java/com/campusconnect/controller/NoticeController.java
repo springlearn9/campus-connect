@@ -37,7 +37,14 @@ public class NoticeController {
 
     // Get notice by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Notice> getNoticeById(@PathVariable Long id) {
+    @Operation(summary = "Get notice by ID", description = "Retrieve a specific notice by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Notice found and returned successfully"),
+            @ApiResponse(responseCode = "404", description = "Notice not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<Notice> getNoticeById(
+            @Parameter(description = "ID of the notice to retrieve") @PathVariable Long id) {
         Optional<Notice> notice = noticeService.getNoticeById(id);
         return notice.map(ResponseEntity::ok)
                     .orElse(ResponseEntity.notFound().build());
@@ -64,9 +71,17 @@ public class NoticeController {
 
     // Update notice
     @PutMapping("/{id}")
-    public ResponseEntity<Notice> updateNotice(@PathVariable Long id, 
-                                             @RequestBody Notice noticeDetails, 
-                                             @RequestParam Long userId) {
+    @Operation(summary = "Update notice", description = "Update an existing campus notice")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Notice updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data or unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Notice not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<Notice> updateNotice(
+            @Parameter(description = "ID of the notice to update") @PathVariable Long id, 
+            @Parameter(description = "Updated notice details") @RequestBody Notice noticeDetails, 
+            @Parameter(description = "ID of the user updating the notice") @RequestParam Long userId) {
         try {
             Notice updatedNotice = noticeService.updateNotice(id, noticeDetails, userId);
             return ResponseEntity.ok(updatedNotice);
@@ -77,7 +92,16 @@ public class NoticeController {
 
     // Delete notice
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteNotice(@PathVariable Long id, @RequestParam Long userId) {
+    @Operation(summary = "Delete notice", description = "Delete a campus notice (only by creator or admin)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Notice deleted successfully"),
+            @ApiResponse(responseCode = "400", description = "Unauthorized or invalid request"),
+            @ApiResponse(responseCode = "404", description = "Notice not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<Void> deleteNotice(
+            @Parameter(description = "ID of the notice to delete") @PathVariable Long id, 
+            @Parameter(description = "ID of the user deleting the notice") @RequestParam Long userId) {
         try {
             noticeService.deleteNotice(id, userId);
             return ResponseEntity.ok().build();
@@ -88,6 +112,11 @@ public class NoticeController {
 
     // Get active notices
     @GetMapping("/active")
+    @Operation(summary = "Get active notices", description = "Retrieve all currently active notices")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved active notices"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<List<Notice>> getActiveNotices() {
         List<Notice> notices = noticeService.getActiveNotices();
         return ResponseEntity.ok(notices);
@@ -95,35 +124,65 @@ public class NoticeController {
 
     // Get notices by status
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<Notice>> getNoticesByStatus(@PathVariable String status) {
+    @Operation(summary = "Get notices by status", description = "Filter notices by their status")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved notices by status"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<List<Notice>> getNoticesByStatus(
+            @Parameter(description = "Status to filter by") @PathVariable String status) {
         List<Notice> notices = noticeService.getNoticesByStatus(status);
         return ResponseEntity.ok(notices);
     }
 
     // Get notices by category
     @GetMapping("/category/{category}")
-    public ResponseEntity<List<Notice>> getNoticesByCategory(@PathVariable String category) {
+    @Operation(summary = "Get notices by category", description = "Filter notices by category (ACADEMIC, ADMINISTRATIVE, EVENT, GENERAL)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved notices by category"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<List<Notice>> getNoticesByCategory(
+            @Parameter(description = "Category to filter by") @PathVariable String category) {
         List<Notice> notices = noticeService.getNoticesByCategory(category);
         return ResponseEntity.ok(notices);
     }
 
     // Get notices by priority
     @GetMapping("/priority/{priority}")
-    public ResponseEntity<List<Notice>> getNoticesByPriority(@PathVariable String priority) {
+    @Operation(summary = "Get notices by priority", description = "Filter notices by priority level (HIGH, NORMAL, LOW)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved notices by priority"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<List<Notice>> getNoticesByPriority(
+            @Parameter(description = "Priority level to filter by") @PathVariable String priority) {
         List<Notice> notices = noticeService.getNoticesByPriority(priority);
         return ResponseEntity.ok(notices);
     }
 
     // Search notices by title
     @GetMapping("/search")
-    public ResponseEntity<List<Notice>> searchNotices(@RequestParam String keyword) {
+    @Operation(summary = "Search notices", description = "Search notices by title keyword")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully found notices matching keyword"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<List<Notice>> searchNotices(
+            @Parameter(description = "Keyword to search in notice titles") @RequestParam String keyword) {
         List<Notice> notices = noticeService.searchNoticesByTitle(keyword);
         return ResponseEntity.ok(notices);
     }
 
     // Get notices by user
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Notice>> getNoticesByUser(@PathVariable Long userId) {
+    @Operation(summary = "Get notices by user", description = "Retrieve all notices posted by a specific user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved user's notices"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<List<Notice>> getNoticesByUser(
+            @Parameter(description = "ID of the user") @PathVariable Long userId) {
         List<Notice> notices = noticeService.getNoticesByUser(userId);
         return ResponseEntity.ok(notices);
     }

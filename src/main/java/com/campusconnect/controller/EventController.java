@@ -73,9 +73,17 @@ public class EventController {
 
     // Update event
     @PutMapping("/{id}")
-    public ResponseEntity<Event> updateEvent(@PathVariable Long id, 
-                                           @RequestBody Event eventDetails, 
-                                           @RequestParam Long userId) {
+    @Operation(summary = "Update event", description = "Update an existing campus event")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Event updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data or unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Event not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<Event> updateEvent(
+            @Parameter(description = "ID of the event to update") @PathVariable Long id, 
+            @Parameter(description = "Updated event details") @RequestBody Event eventDetails, 
+            @Parameter(description = "ID of the user updating the event") @RequestParam Long userId) {
         try {
             Event updatedEvent = eventService.updateEvent(id, eventDetails, userId);
             return ResponseEntity.ok(updatedEvent);
@@ -86,7 +94,16 @@ public class EventController {
 
     // Delete event
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEvent(@PathVariable Long id, @RequestParam("") Long userId) {
+    @Operation(summary = "Delete event", description = "Delete a campus event (only by creator or admin)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Event deleted successfully"),
+            @ApiResponse(responseCode = "400", description = "Unauthorized or invalid request"),
+            @ApiResponse(responseCode = "404", description = "Event not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<Void> deleteEvent(
+            @Parameter(description = "ID of the event to delete") @PathVariable Long id, 
+            @Parameter(description = "ID of the user deleting the event") @RequestParam Long userId) {
         try {
             eventService.deleteEvent(id, userId);
             return ResponseEntity.ok().build();
@@ -122,23 +139,39 @@ public class EventController {
 
     // Get events by user
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Event>> getEventsByUser(@PathVariable Long userId) {
+    @Operation(summary = "Get events by user", description = "Retrieve all events created by a specific user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved user's events"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<List<Event>> getEventsByUser(
+            @Parameter(description = "ID of the user") @PathVariable Long userId) {
         List<Event> events = eventService.getEventsByUser(userId);
         return ResponseEntity.ok(events);
     }
 
     // Get events by location
     @GetMapping("/location")
-    public ResponseEntity<List<Event>> getEventsByLocation(@RequestParam String location) {
+    @Operation(summary = "Get events by location", description = "Filter events by location")
+    public ResponseEntity<List<Event>> getEventsByLocation(
+            @Parameter(description = "Location to filter by") @RequestParam String location) {
         List<Event> events = eventService.getEventsByLocation(location);
         return ResponseEntity.ok(events);
     }
 
+
+
     // Get events by date range
     @GetMapping("/date-range")
+    @Operation(summary = "Get events by date range", description = "Retrieve events within a specific date range")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved events in date range"),
+            @ApiResponse(responseCode = "400", description = "Invalid date format"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<List<Event>> getEventsByDateRange(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+            @Parameter(description = "Start date (ISO 8601 format)") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @Parameter(description = "End date (ISO 8601 format)") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
         List<Event> events = eventService.getEventsByDateRange(startDate, endDate);
         return ResponseEntity.ok(events);
     }

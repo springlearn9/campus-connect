@@ -32,10 +32,38 @@ public class OpenApiConfig {
                 .url("https://choosealicense.com/licenses/mit/");
 
         Info info = new Info()
-                .title("Campus Connect API")
-                .version("1.0.0")
+                .title("Campus Connect API - Enhanced Edition")
+                .version("2.0.0")
                 .contact(contact)
-                .description("Campus Connect is a comprehensive platform for managing lost and found items, campus events, and important notices. This API provides endpoints for students, faculty, and administrators to interact with the system.")
+                .description("""
+                    Campus Connect is a comprehensive platform for managing campus life with advanced features:
+                    
+                    🎯 **Core Features:**
+                    • Lost & Found Management with Image Support
+                    • Event Management with Advanced Filtering
+                    • Notice Board with Category-based Organization
+                    • User Profile Management with Enhanced Fields
+                    
+                    🚀 **Advanced Features:**
+                    • Real-time Notifications via WebSocket
+                    • File Upload System for Images
+                    • Advanced Search & Filtering
+                    • Email Integration for Contact Management
+                    • Multi-criteria Sorting and Pagination
+                    
+                    📱 **API Capabilities:**
+                    • RESTful API Design with OpenAPI 3.0
+                    • Comprehensive Error Handling
+                    • File Upload Support (Images: JPG, PNG, GIF)
+                    • WebSocket Support for Real-time Updates
+                    • Email Notifications for Lost & Found Items
+                    
+                    👥 **User Roles:** STUDENT, FACULTY, ADMIN, STAFF
+                    📊 **Item Status Tracking:** PENDING, SEARCHING, FOUND, CLAIMED, CLOSED
+                    🔔 **Notification Types:** Events, Notices, Lost Items, System Alerts
+                    
+                    For WebSocket connection: ws://localhost:8080/ws
+                    """)
                 .termsOfService("https://github.com/springlearn9/campus-connect/blob/main/TERMS.md")
                 .license(mitLicense);
 

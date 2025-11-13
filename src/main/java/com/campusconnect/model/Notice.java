@@ -2,9 +2,10 @@ package com.campusconnect.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -13,37 +14,44 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "notices")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Notice {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Title is required")
     @Column(nullable = false)
     private String title;
 
     @Column(length = 2000)
     private String description;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String priority = "NORMAL"; // HIGH, NORMAL, LOW
+    private NoticePriority priority = NoticePriority.NORMAL;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String category; // ACADEMIC, ADMINISTRATIVE, EVENT, GENERAL
+    private NoticeCategory category = NoticeCategory.GENERAL;
 
-    @Column
+    @Column(name = "valid_until")
     private LocalDateTime validUntil;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status = "ACTIVE"; // ACTIVE, ARCHIVED, DRAFT
+    private NoticeStatus status = NoticeStatus.ACTIVE;
 
-    @Column
+    @Column(name = "attachment_url")
     private String attachmentUrl;
 
-    @CreatedDate
+    @CreationTimestamp
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @LastModifiedDate
+    @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -51,14 +59,16 @@ public class Notice {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User postedBy;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
+    // Enums for better type safety
+    public enum NoticePriority {
+        HIGH, NORMAL, LOW
     }
 
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
+    public enum NoticeCategory {
+        ACADEMIC, ADMINISTRATIVE, EVENT, GENERAL
+    }
+
+    public enum NoticeStatus {
+        ACTIVE, ARCHIVED, DRAFT
     }
 }

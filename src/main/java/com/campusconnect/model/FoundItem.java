@@ -3,32 +3,93 @@ package com.campusconnect.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
-    @Entity
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Table(name = "found_items")
-    public class FoundItem {
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "found_items")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class FoundItem {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-        private String itemName;
-        private String description;
-        private String location;
-        private String photoUrl;
+    @NotBlank(message = "Item name is required")
+    @Column(name = "item_name")
+    private String itemName;
 
-        @CreatedDate
-        private LocalDateTime foundDate;
+    @Column(length = 1000)
+    private String description;
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-        private User reportedBy;
+    private String location;
+
+    @Column(name = "found_date")
+    private LocalDateTime foundDate;
+
+    @Enumerated(EnumType.STRING)
+    private ItemStatus status = ItemStatus.AVAILABLE;
+
+    @Column(name = "category")
+    private String category; // ELECTRONICS, DOCUMENTS, CLOTHING, ACCESSORIES, BOOKS, OTHER
+
+    @Column(name = "contact_info")
+    private String contactInfo;
+
+    // Enhanced image support
+    @Column(name = "photo_url")
+    private String photoUrl;
+
+    @Column(name = "additional_images", length = 1000)
+    private String additionalImages; // JSON array of image URLs
+
+    // Additional details
+    @Column(name = "distinctive_features")
+    private String distinctiveFeatures;
+
+    @Column(name = "handover_location")
+    private String handoverLocation;
+
+    @Column(name = "verification_required")
+    private Boolean verificationRequired = true;
+
+    @Column(name = "is_anonymous")
+    private Boolean isAnonymous = false;
+
+    @CreationTimestamp
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reported_by_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private User reportedBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "claimed_by_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private User claimedBy;
+
+    @Column(name = "claimed_at")
+    private LocalDateTime claimedAt;
+
+    // Status enum for found items
+    public enum ItemStatus {
+        AVAILABLE,  // Found item is available for claim
+        CLAIMED,    // Item has been claimed by someone
+        VERIFIED,   // Ownership has been verified and item handed over
+        EXPIRED     // Item posting has expired
     }
+}
 
