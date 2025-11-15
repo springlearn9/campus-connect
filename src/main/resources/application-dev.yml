@@ -1,0 +1,50 @@
+# ===============================
+# = H2 DATABASE CONFIGURATION (Development)
+# ===============================
+spring:
+  datasource:
+    url: jdbc:h2:mem:campus_connect_db
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  
+  # H2 Console (for debugging - accessible at http://localhost:8080/h2-console)
+  h2:
+    console:
+      enabled: true
+  
+  # JPA Configuration
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    defer-datasource-initialization: true
+  
+  # SQL Initialization
+  sql:
+    init:
+      mode: always
+
+# ===============================
+# = SERVER
+# ===============================
+server:
+  port: 8080
+
+# ===============================
+# = LOGGING
+# ===============================
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
