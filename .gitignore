@@ -36,3 +36,32 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Windows ###
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+### Logs ###
+*.log
+logs/
+
+### Temporary files ###
+*.tmp
+*.temp
+*~
+
+### Application specific ###
+uploads/
+*.jar.original
+.idea/workspace.xml
+.idea/misc.xml
+.idea/vcs.xml
+.idea/encodings.xml
+
+### Test scripts ###
+*.ps1
+*.bat
+api-tests.*
+test-*.* 
+simple-*.* 

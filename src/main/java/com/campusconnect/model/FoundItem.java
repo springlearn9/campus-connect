@@ -9,6 +9,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -71,15 +73,15 @@ public class FoundItem {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reported_by_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User reportedBy;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "claimed_by_id")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "found_item_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private User claimedBy;
+    private List<User> claimedBy = new ArrayList<>();
 
     @Column(name = "claimed_at")
     private LocalDateTime claimedAt;
